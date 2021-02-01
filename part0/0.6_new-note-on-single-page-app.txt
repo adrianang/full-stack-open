@@ -1,0 +1,29 @@
+title exercise 0.6: new note on single page app
+
+note over browser
+user submits the form element containing note
+end note
+
+note over browser
+event handler prevents default
+handling of form submit
+end note
+
+note over browser
+event handler creates new note object,
+pushes note object to notes container
+end note
+
+note over browser
+event handler rerenders notes container
+end note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+
+note over server
+form submitted as JSON
+with content and data,
+server sends status code 201 (created)
+end note
+
+server-->browser: Status code 201 (created)
