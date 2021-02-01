@@ -1,0 +1,39 @@
+title exercise 0.4: new note
+
+note over browser
+user submits the form element containing note
+end note
+
+browser->server: HTTP POST to https://studies.cs.helsinki.fi/exampleapp/new_note
+
+note over server
+server creates new note object,
+pushes note object into notes array,
+then returns redirect
+end note
+
+server-->browser: Status code 302; redirect to https://studies.cs.helsink.fi/exampleapp/notes
+
+note over browser
+browser reloads notes page
+end note
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+server-->browser: send HTML code
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+server-->browser: send main.css
+browser->server: HTTP GET https://studies.cs.helsink.fi/exampleapp/main.js
+server-->browser: send main.js
+
+note over browser
+browser executes JS code,
+JSON data requested from server
+end note
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+server-->browser: send JSON data
+
+note over browser
+notes container is rendered with JSON data,
+which includes the user's submitted note within notes array
+end note
