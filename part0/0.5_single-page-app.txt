@@ -1,0 +1,24 @@
+title exercise 0.5: single page app
+
+note over browser
+user navigates to single page app
+end note
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa
+server-->browser: send HTML code
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+server-->browser: send main.css
+browser->server: HTTP GET https://studies.cs.helsink.fi/exampleapp/spa.js
+server-->browser: send spa.js
+
+note over browser
+browser executes JS code,
+JSON data requested from server
+end note
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+server-->browser: send JSON data
+
+note over browser
+notes container is rendered with JSON data
+end note
