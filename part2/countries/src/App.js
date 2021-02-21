@@ -7,7 +7,7 @@ const CountryQueryInput = ({ handleFilterChange }) => (
   </div>
 )
 
-const CountryQueryResults = ({ filteredCountries }) => {
+const CountryQueryResults = ({ filteredCountries, handleShowCountryClick, openedCountries }) => {
   if (filteredCountries.length > 10) {
     return "Too many countries, specify another filter"
   }
@@ -22,7 +22,15 @@ const CountryQueryResults = ({ filteredCountries }) => {
 
   return (
     <div>
-      {filteredCountries.map(country => <div key={country.name}>{country.name}</div>)}
+      {filteredCountries.map(country => 
+        <div key={country.name}>
+          {country.name} 
+          <button value={country.name} onClick={handleShowCountryClick}>
+            {openedCountries.includes(country.name) ? "hide" : "show"}
+          </button>
+          {openedCountries.includes(country.name) ? <CountryDetails country={country} /> : ""}
+        </div>
+      )}
     </div>
   )
 }
@@ -45,6 +53,7 @@ const CountryDetails = ({country}) => (
 const App = () => {
   const [filter, setFilter] = useState('')
   const [countries, setCountries] = useState([])
+  const [openedCountries, setOpenedCountries] = useState([])
 
   const hook = () => {
     axios
@@ -56,6 +65,13 @@ const App = () => {
   useEffect(hook, [])
 
   const handleFilterChange = (event) => setFilter(event.target.value)
+  const handleShowCountryClick = (event) => {
+    if (openedCountries.includes(event.target.value)) {
+      return setOpenedCountries(openedCountries.filter(country => event.target.value != country))
+    }
+
+    setOpenedCountries(openedCountries.concat(event.target.value))
+  }
 
   const filteredCountries =
     countries.filter(country => country.name.toLowerCase().includes(filter.toLowerCase()))
@@ -63,7 +79,11 @@ const App = () => {
   return (
     <div>
       <CountryQueryInput handleFilterChange={handleFilterChange} />
-      <CountryQueryResults filteredCountries={filteredCountries} />
+      <CountryQueryResults
+        filteredCountries={filteredCountries}
+        handleShowCountryClick={handleShowCountryClick}
+        openedCountries={openedCountries}
+      />
     </div>
   )
 }
