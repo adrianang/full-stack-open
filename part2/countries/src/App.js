@@ -17,7 +17,7 @@ const CountryQueryResults = ({ filteredCountries, handleShowCountryClick, opened
   }
   
   if (filteredCountries.length === 1) {
-    return <CountryDetails country={filteredCountries[0]}/>
+    return <CountryDetails country={filteredCountries[0]} />
   } 
 
   return (
@@ -35,18 +35,47 @@ const CountryQueryResults = ({ filteredCountries, handleShowCountryClick, opened
   )
 }
 
-const CountryDetails = ({country}) => (
+const CountryDetails = ({country}) => {
+  const [weatherData, setWeatherData] = useState(null)
+  const api_key = process.env.REACT_APP_API_KEY
+
+  const hook = () => {
+    if (country.capital === '') {
+      return null
+    }
+
+    axios
+      .get(`http://api.weatherstack.com/current?access_key=${api_key}&query=${country.capital}`)
+      .then(response => {
+        setWeatherData(response.data)
+      })
+  }
+  useEffect(hook, [])
+
+  return (
+    <div>
+      <h1>{country.name}</h1>
+      <div>capital: {country.capital}</div>
+      <div>population: {country.population}</div>
+
+      <h2>Spoken languages</h2>
+      <ul>
+        {country.languages.map(language => <li key={language.name}>{language.name}</li>)}
+      </ul>
+
+      <img src={country.flag} width="300" />
+
+      <h2>Weather in {country.capital ? country.capital : country.name}</h2>
+      {weatherData ? <CapitalWeather weatherData={weatherData} /> : `Loading weather data for ${country.capital}...`}
+    </div>
+  )
+}
+
+const CapitalWeather = ({weatherData}) => (
   <div>
-    <h1>{country.name}</h1>
-    <div>capital: {country.capital}</div>
-    <div>population: {country.population}</div>
-
-    <h2>languages</h2>
-    <ul>
-      {country.languages.map(language => <li key={language.name}>{language.name}</li>)}
-    </ul>
-
-    <img src={country.flag} width="300" />
+    <div><strong>temperature:</strong> {weatherData.current.temperature}° Celsius</div>
+    <div><img src={weatherData.current.weather_icons} /></div>
+    <div><strong>wind:</strong> {weatherData.current.wind_speed} km/h {weatherData.current.wind_dir}</div>
   </div>
 )
 
