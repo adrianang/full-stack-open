@@ -22,21 +22,34 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
 
-    if (persons.some(person => person.name === newName)) {
-      return window.alert(`${newName} is already added to phonebook`);
-    }
-
     const personObject = {
       name: newName,
       number: newNumber
+    }
+    const checkPersonExists = persons.some(person => person.name === newName)
+    const idToUpdate = persons.find(person => person.name === newName).id
+    const resetNewContactInputs = () => {
+      setName('')
+      setNumber('')
+    }
+
+    if (checkPersonExists) {
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        return noteService
+          .update(idToUpdate, personObject)
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.id === idToUpdate ? returnedPerson : person))
+            resetNewContactInputs()
+          })
+      }
+      return
     }
 
     noteService
       .create(personObject)
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
-        setName('')
-        setNumber('')
+        resetNewContactInputs()
       })
   }
 
@@ -45,9 +58,7 @@ const App = () => {
     if (window.confirm(`Delete ${nameToDelete}?`)) {
       noteService
         .remove(id)
-        .then(returnedPersons => {
-          setPersons(persons.filter(person => person.id !== id))
-        })
+        .then(setPersons(persons.filter(person => person.id !== id)))
     }
   }
 
