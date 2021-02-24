@@ -37,14 +37,24 @@ const App = () => {
 
     if (checkPersonExists) {
       const idToUpdate = persons.find(person => person.name === newName).id
-
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
         return noteService
           .update(idToUpdate, personObject)
           .then(returnedPerson => {
             setPersons(persons.map(person => person.id === idToUpdate ? returnedPerson : person))
             resetNewContactInputs()
-            setMessage(`Updated ${newName}'s number`)
+            setMessage({
+              content: `Updated ${newName}'s number`,
+              type: 'success'
+            })
+            setTimeout(() => setMessage(null), 5000)
+          })
+          .catch(error => {
+            setMessage({
+              content: `Information of ${newName} has already been removed from server`,
+              type: 'error'
+            })
+            setPersons(persons.filter(person => person.id !== idToUpdate))
             setTimeout(() => setMessage(null), 5000)
           })
       }
@@ -56,7 +66,10 @@ const App = () => {
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
         resetNewContactInputs()
-        setMessage(`Added ${newName} to phonebook`)
+        setMessage({
+          content: `Added ${newName} to phonebook`,
+          type: 'success'
+        })
         setTimeout(() => setMessage(null), 5000)
       })
   }
@@ -68,7 +81,10 @@ const App = () => {
         .remove(id)
         .then(returnedPerson => {
           setPersons(persons.filter(person => person.id !== id))
-          setMessage(`Deleted ${nameToDelete} from phonebook`)
+          setMessage({
+            content: `Deleted ${nameToDelete} from phonebook`,
+            type: 'success'
+          })
           setTimeout(() => setMessage(null), 5000)
         })
     }
